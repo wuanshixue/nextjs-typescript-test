@@ -12,7 +12,7 @@ const Post=()=>{
                            height={40}
                            className="w-10 h-10 rounded-full"
                     />
-                    <span className="font-medium">Lucy</span>
+                    <span className="font-medium">Beach Lucy</span>
                 </div>
                 <Image src="/more.png" alt="" width={16} height={16}/>
             </div>
