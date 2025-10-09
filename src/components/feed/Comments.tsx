@@ -54,7 +54,7 @@ const Comments=()=>{
                             <span className="text-gray-300">|</span>
                             <span className="text-gray-500">123 Likes</span>
                         </div>
-                        <div className="">
+                        <div className="flex items-center gap-4 mt-2">
                             Reply
                         </div>
                     </div>

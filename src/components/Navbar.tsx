@@ -70,7 +70,7 @@ const Navbar=()=>{
                 <SignedOut>
                     <div className="flex items-center gap-2 text-sm">
                         <Image src="/login.png" alt="" width={20} height={20}/>
-                        <Link href="/sign-in">登录注册</Link>
+                        <Link href="/sign-in">登录/注册</Link>
                     </div>
                 </SignedOut>
             </ClerkLoaded>

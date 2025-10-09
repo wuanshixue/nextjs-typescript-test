@@ -7,7 +7,7 @@ const FriendRequests=()=>{
             {/*TOP*/}
             <div className="flex items-center justify-between font-medium">
                 <span className="text-gray-500">Friend Requests</span>
-                <Link href="/" className="text-blue-500 text-sm">See all</Link>
+                <Link href="/public" className="text-blue-500 text-sm">See all</Link>
             </div>
             {/*用户*/}
             <div className="flex items-center justify-between">

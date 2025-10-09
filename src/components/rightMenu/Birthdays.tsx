@@ -32,7 +32,7 @@ const Birthdays=()=>{
                     width={24}
                     height={24}
                 />
-                <Link href="/" className="flex flex-col gap-1 text-xs">
+                <Link href="/public" className="flex flex-col gap-1 text-xs">
                     <span className="text-gray-500 font-semibold">Upcoming</span>
                     <span className="text-gray-500">10th of July</span>
                 </Link>
