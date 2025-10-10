@@ -1,8 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import {User} from "@prisma/client";
+import prisma from "@/lib/client";
 
 const UserMediaCard = async ({user}:{user?:User})=>{
+
+    const postsWithMedia = await prisma.post.findMany({
+        where:{
+            userId:user?.id,
+            img:{
+                not:null,
+            }
+        },
+        take:8,
+        orderBy:{
+            createdAt:"desc"
+        }
+    })
     return (
         <div className="p-4 bg-white rounded-lg shadow-md text-sm flex flex-col gap-4">
             {/*TOP*/}
@@ -14,70 +28,19 @@ const UserMediaCard = async ({user}:{user?:User})=>{
             </div>
             {/*BOTTOM*/}
             <div className="flex gap-4 justify-between flex-wrap">
-                <div className="relative w-1/5 h-24">
+                {postsWithMedia.length
+                    ? postsWithMedia.map((post) => (
+                        <div className="relative w-1/5 h-24" key={post.id}>
                     <Image
-                        src="https://images.pexels.com/photos/33558172/pexels-photo-33558172.jpeg"
+                        src={post.img!}
                         alt=""
                         fill
                         className="object-cover rounded-md"
                     />
                 </div>
-                <div className="relative w-1/5 h-24">
-                    <Image
-                        src="https://images.pexels.com/photos/31901163/pexels-photo-31901163.jpeg"
-                        alt=""
-                        fill
-                        className="object-cover rounded-md"
-                    />
-                </div>
-                <div className="relative w-1/5 h-24">
-                    <Image
-                        src="https://images.pexels.com/photos/33705333/pexels-photo-33705333.jpeg"
-                        alt=""
-                        fill
-                        className="object-cover rounded-md"
-                    />
-                </div>
-                <div className="relative w-1/5 h-24">
-                    <Image
-                        src="https://images.pexels.com/photos/13635192/pexels-photo-13635192.jpeg"
-                        alt=""
-                        fill
-                        className="object-cover rounded-md"
-                    />
-                </div>
-                <div className="relative w-1/5 h-24">
-                    <Image
-                        src="https://images.pexels.com/photos/33528679/pexels-photo-33528679.jpeg"
-                        alt=""
-                        fill
-                        className="object-cover rounded-md"
-                    />
-                </div>
-                <div className="relative w-1/5 h-24">
-                    <Image
-                        src="https://images.pexels.com/photos/33591236/pexels-photo-33591236.jpeg"
-                        alt=""
-                        fill
-                        className="object-cover rounded-md"
-                    />
-                </div>
-                <div className="relative w-1/5 h-24">
-                    <Image
-                        src="https://images.pexels.com/photos/10396212/pexels-photo-10396212.jpeg"
-                        alt=""
-                        fill
-                        className="object-cover rounded-md"
-                    />
-                </div>
-                <div className="relative w-1/5 h-24">
-                    <Image
-                        src="https://images.pexels.com/photos/30100793/pexels-photo-30100793.jpeg"
-                        alt=""
-                        fill
-                        className="object-cover rounded-md"
-                    />
-                </div>
+                    ))
+                :"无 媒 体"}
+
             </div>
         </div>
     )
