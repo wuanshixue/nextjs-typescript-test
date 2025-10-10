@@ -30,6 +30,7 @@ const FriendRequests = async () => {
             </div>
             {/* USER */}
             <FriendRequestList requests={requests}/>
+
         </div>
     );
 };

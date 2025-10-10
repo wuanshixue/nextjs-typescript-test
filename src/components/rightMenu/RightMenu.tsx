@@ -1,13 +1,13 @@
-import FriendRequests from './FriendRequests'
-import Birthdays from './Birthdays'
-import Ad from '../Ad'
-import UserInfoCard from "@/components/rightMenu/UserInfoCard";
-import UserMediaCard from "@/components/rightMenu/UserMediaCard";
-import {User} from "@prisma/client";
-import {Suspense} from "react";
+import { User } from "@prisma/client";
+import Ad from "../Ad";
+import Birthdays from "./Birthdays";
+import FriendRequests from "./FriendRequests";
+import UserInfoCard from "./UserInfoCard";
+import UserMediaCard from "./UserMediaCard";
+import { Suspense } from "react";
 
-const RightMenu=({user}:{user?:User})=>{
-    return(
+const RightMenu = ({ user }: { user?: User }) => {
+    return (
         <div className="flex flex-col gap-6">
             {user ? (
                 <>
@@ -19,11 +19,11 @@ const RightMenu=({user}:{user?:User})=>{
                     </Suspense>
                 </>
             ) : null}
-
-            <FriendRequests/>
-            <Birthdays/>
-            <Ad size={"md"}/>
+            <FriendRequests />
+            <Birthdays />
+            <Ad size="md" />
         </div>
-    )
-}
-export default RightMenu
+    );
+};
+
+export default RightMenu;
