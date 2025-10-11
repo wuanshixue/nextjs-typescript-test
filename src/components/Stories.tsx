@@ -1,44 +1,40 @@
 import Image from "next/image";
+import prisma from "@/lib/client";
+import {auth} from "@clerk/nextjs/server";
+import StoryList from "@/components/StoryList";
 
-const Stories= () =>{
+const Stories= async () =>{
+    const {userId:currentUserId} = auth();
+    if(!currentUserId) return null;
+
+    const stories = await prisma.story.findMany({
+        where:{
+            expiresAt:{
+                gt: new Date(),
+            },
+            OR:[
+                {
+                    user:{
+                        followers:{
+                            some:{
+                                followingId: currentUserId,
+                            }
+                        }
+                    }
+                },
+                {
+                    userId: currentUserId,
+                }
+            ]
+        },
+        include:{
+            user:true,
+        }
+    });
     return(
         <div className="p-4 bg-white rounded-lg shadow-md overflow-scroll text-xs  ">
             <div className="flex gap-8 w-max">
-                {/*  Stories */}
-                <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <Image src="https://images.pexels.com/photos/33578877/pexels-photo-33578877.jpeg" alt="" width={80} height={80} className="w-20 h-20 rounded-full ring-2 ring-pink-300"/>
-                    <span className="font-medium">Ricky</span>
-                </div>
-                {/*  Stories */}
-                <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <Image src="https://images.pexels.com/photos/33578877/pexels-photo-33578877.jpeg" alt="" width={80} height={80} className="w-20 h-20 rounded-full ring-2 ring-pink-300"/>
-                    <span className="font-medium">Ricky</span>
-                </div>
-                {/*  Stories */}
-                <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <Image src="https://images.pexels.com/photos/33578877/pexels-photo-33578877.jpeg" alt="" width={80} height={80} className="w-20 h-20 rounded-full ring-2 ring-pink-300"/>
-                    <span className="font-medium">Ricky</span>
-                </div>
-                {/*  Stories */}
-                <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <Image src="https://images.pexels.com/photos/33578877/pexels-photo-33578877.jpeg" alt="" width={80} height={80} className="w-20 h-20 rounded-full ring-2 ring-pink-300"/>
-                    <span className="font-medium">Ricky</span>
-                </div>
-                {/*  Stories */}
-                <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <Image src="https://images.pexels.com/photos/33578877/pexels-photo-33578877.jpeg" alt="" width={80} height={80} className="w-20 h-20 rounded-full ring-2 ring-pink-300"/>
-                    <span className="font-medium">Ricky</span>
-                </div>
-                {/*  Stories */}
-                <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <Image src="https://images.pexels.com/photos/33578877/pexels-photo-33578877.jpeg" alt="" width={80} height={80} className="w-20 h-20 rounded-full ring-2 ring-pink-300"/>
-                    <span className="font-medium">Ricky</span>
-                </div>
-                {/*  Stories */}
-                <div className="flex flex-col items-center gap-2 cursor-pointer">
-                    <Image src="https://images.pexels.com/photos/33578877/pexels-photo-33578877.jpeg" alt="" width={80} height={80} className="w-20 h-20 rounded-full ring-2 ring-pink-300"/>
-                    <span className="font-medium">Ricky</span>
-                </div>
+                <StoryList stories={stories} userId={currentUserId}/>
             </div>
         </div>
     )

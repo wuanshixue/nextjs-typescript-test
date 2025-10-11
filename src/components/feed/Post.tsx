@@ -2,6 +2,9 @@ import Image from "next/image";
 import Comments from "./Comments";
 import {Post as PostType,User} from "@prisma/client";
 import PostInteraction from "@/components/feed/PostInteraction";
+import {Suspense} from "react";
+import PostInfo from "@/components/feed/PostInfo";
+import {auth} from "@clerk/nextjs/server";
 
 type FeedPostType = PostType & { user: User } & {
     likes: [{ userId: string }];
@@ -10,6 +13,7 @@ type FeedPostType = PostType & { user: User } & {
 };
 
 const Post=( { post }:{ post : FeedPostType } )=>{
+    const {userId} = auth();
     return(
         <div className="flex flex-col gap-4">
             {/*用户*/}
@@ -28,7 +32,7 @@ const Post=( { post }:{ post : FeedPostType } )=>{
                             : post.user.username}
                     </span>
                 </div>
-                <Image src="/more.png" alt="" width={16} height={16}/>
+                {userId === post.user.id && <PostInfo postId={post.id}/>}
             </div>
             {/*描述*/}
             <div className="flex flex-col gap-4">
@@ -45,13 +49,18 @@ const Post=( { post }:{ post : FeedPostType } )=>{
                 </p>
             </div>
             {/*交互*/}
-            <PostInteraction
-                postId={post.id}
-                likes={post.likes.map((like) => like.uesrId)}
-                commentNumber={post._count.comments}/>
-            {/*评论*/}
-            <Comments/>
+            <Suspense fallback="加载中 ...">
+                <PostInteraction
+                    postId={post.id}
+                    likes={post.likes.map((like) => like.userId)}
+                    commentNumber={post._count.comments}
+                />
+            </Suspense>
+            <Suspense fallback="Loading...">
+                <Comments postId={post.id} />
+            </Suspense>
         </div>
+
     )
 }
 export default Post
