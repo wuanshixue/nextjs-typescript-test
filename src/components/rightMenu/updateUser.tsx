@@ -5,16 +5,22 @@ import { useState } from "react";
 import Image from "next/image";
 import {updateProfile} from "@/lib/actions";
 import { CldUploadWidget } from "next-cloudinary";
+import {useRouter} from "next/navigation";
+import UpdateButton from "@/components/rightMenu/UpdateButton";
 
 const UpdateUser=({user}:{user?:User})=>{
 
     const [open, setOpen] = useState(false);
     const [cover, setCover] = useState<any>(false);
 
+    const router = useRouter()
 
     const handleClose = () => {
         setOpen(false);
+        router.refresh();
+
     };
+
     return(
         <div className="">
             <span
@@ -131,10 +137,7 @@ const UpdateUser=({user}:{user?:User})=>{
                                 />
                             </div>
                         </div>
-
-
-
-                        <button className="bg-blue-500 p-2 mt-2 rounded-md text-white">Update</button>
+                        <UpdateButton/>
                         <div
                             className="absolute text-xl right-4 top-3 cursor-pointer"
                             onClick={handleClose}
