@@ -1,4 +1,3 @@
-import Image from "next/image";
 import prisma from "@/lib/client";
 import CommentList from "@/components/feed/CommentList";
 

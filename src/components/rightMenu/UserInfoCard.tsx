@@ -4,7 +4,6 @@ import {User} from "@prisma/client";
 import {auth} from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
 import UserInfoCardInteraction from "@/components/rightMenu/UserInfoCardInteraction";
-import {URLPattern} from "next/dist/server/web/spec-extension/url-pattern";
 import UpdateUser from "@/components/rightMenu/updateUser";
 
 

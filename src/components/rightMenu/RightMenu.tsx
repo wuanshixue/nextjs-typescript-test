@@ -20,7 +20,6 @@ const RightMenu = ({ user }: { user?: User }) => {
                 </>
             ) : null}
             <FriendRequests />
-            <Birthdays />
             <Ad size="md" />
         </div>
     );

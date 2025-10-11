@@ -23,7 +23,7 @@ const Navbar=()=>{
                         width={16}
                         height={16}
                         className="w-4 h-4" />
-                    <span>Homepage</span>
+                    <span>主页</span>
                 </Link>
                 <Link href="/" className="flex items-center gap-2">
                     <Image
@@ -32,7 +32,7 @@ const Navbar=()=>{
                         width={16}
                         height={16}
                         className="w-4 h-4" />
-                    <span>Friends</span>
+                    <span>好友</span>
                 </Link>
                 <Link href="/" className="flex items-center gap-2">
                     <Image
@@ -41,7 +41,7 @@ const Navbar=()=>{
                         width={16}
                         height={16}
                         className="w-4 h-4" />
-                    <span>Stories</span>
+                    <span>故事</span>
                 </Link>
                 <div className="hidden xl:flex p-2 bg-slate-100 items-center rounded-xl">
                     <input type="text" placeholder="search..." className="bg-transparent outline-none"/>

@@ -255,6 +255,28 @@ export const addComment = async (postId: number, desc: string) => {
     }
 };
 
+export const deleteComment = async (commentId: number) => {
+    const { userId } = auth();
+
+    if (!userId) throw new Error("User is not authenticated!");
+
+    try {
+        // 只允许作者本人删除
+        await prisma.comment.deleteMany({
+            where: {
+                id: commentId,
+                userId,
+            },
+        });
+
+        revalidatePath("/"); // 或者你也可以写 revalidatePath(`/post/${postId}`) 视项目情况
+    } catch (err) {
+        console.log("deleteComment error:", err);
+        throw new Error("Failed to delete comment!");
+    }
+};
+
+
 export const addPost = async (formData: FormData, img: string) => {
     const desc = formData.get("desc") as string;
 
@@ -331,7 +353,7 @@ export const deletePost = async (postId: number) => {
         await prisma.post.delete({
             where: {
                 id: postId,
-                userId,
+                    userId,
             },
         });
         revalidatePath("/")
@@ -339,3 +361,6 @@ export const deletePost = async (postId: number) => {
         console.log(err);
     }
 };
+
+
+
