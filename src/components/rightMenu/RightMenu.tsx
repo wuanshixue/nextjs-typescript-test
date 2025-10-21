@@ -5,6 +5,7 @@ import FriendRequests from "./FriendRequests";
 import UserInfoCard from "./UserInfoCard";
 import UserMediaCard from "./UserMediaCard";
 import { Suspense } from "react";
+import Friends from "./Friends";
 
 const RightMenu = ({ user }: { user?: User }) => {
     return (
@@ -20,6 +21,8 @@ const RightMenu = ({ user }: { user?: User }) => {
                 </>
             ) : null}
             <FriendRequests />
+            <Friends />
+            <Birthdays />
             <Ad size="md" />
         </div>
     );

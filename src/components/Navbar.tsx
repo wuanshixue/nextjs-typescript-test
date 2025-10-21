@@ -23,7 +23,7 @@ const Navbar=()=>{
                         width={16}
                         height={16}
                         className="w-4 h-4" />
-                    <span>主页</span>
+                    <Link href="/">首页</Link>
                 </Link>
                 <Link href="/" className="flex items-center gap-2">
                     <Image
