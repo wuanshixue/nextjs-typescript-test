@@ -362,5 +362,164 @@ export const deletePost = async (postId: number) => {
     }
 };
 
+export const getUser = async (userId: string) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
+        return user;
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
+}
 
+export const getConversation = async (receiverId: string) => {
+  const { userId: currentUserId } = auth();
 
+  if (!currentUserId) {
+    throw new Error("User is not authenticated!");
+  }
+
+  try {
+    let conversation = await prisma.conversation.findFirst({
+      where: {
+        OR: [
+          { participant1Id: currentUserId, participant2Id: receiverId },
+          { participant1Id: receiverId, participant2Id: currentUserId },
+        ],
+      },
+      include: {
+        messages: {
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+      },
+    });
+
+    if (!conversation) {
+      conversation = await prisma.conversation.create({
+        data: {
+          participant1Id: currentUserId,
+          participant2Id: receiverId,
+        },
+        include: {
+          messages: true,
+        },
+      });
+    }
+
+    return conversation;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong!");
+  }
+};
+
+export const sendMessage = async (receiverId: string, text: string) => {
+  const { userId: currentUserId } = auth();
+
+  if (!currentUserId) {
+    throw new Error("User is not authenticated!");
+  }
+
+  if (!text.trim()) {
+    throw new Error("Message cannot be empty!");
+  }
+
+  try {
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        OR: [
+          { participant1Id: currentUserId, participant2Id: receiverId },
+          { participant1Id: receiverId, participant2Id: currentUserId },
+        ],
+      },
+    });
+
+    if (!conversation) {
+      // If no conversation exists, we can't send a message to it.
+      // Depending on the desired UX, you might want to create one here first.
+      // For now, we'll throw an error.
+      throw new Error("Conversation not found!");
+    }
+
+    const newMessage = await prisma.message.create({
+      data: {
+        text,
+        senderId: currentUserId,
+        conversationId: conversation.id,
+      },
+    });
+
+    return newMessage;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Something went wrong!");
+  }
+};
+
+export const getNotifications = async () => {
+  const { userId: currentUserId } = auth();
+
+  if (!currentUserId) {
+    return [];
+  }
+
+  try {
+    const notifications = await prisma.message.findMany({
+      where: {
+        isRead: false,
+        conversation: {
+          OR: [
+            { participant1Id: currentUserId },
+            { participant2Id: currentUserId },
+          ],
+        },
+        senderId: {
+          not: currentUserId,
+        },
+      },
+      include: {
+        sender: true,
+        conversation: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return notifications;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+export const readConversation = async (conversationId: number) => {
+  const { userId: currentUserId } = auth();
+
+  if (!currentUserId) {
+    throw new Error("User is not authenticated!");
+  }
+
+  try {
+    await prisma.message.updateMany({
+      where: {
+        conversationId: conversationId,
+        senderId: {
+          not: currentUserId,
+        },
+        isRead: false,
+      },
+      data: {
+        isRead: true,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    throw new Error("Something went wrong!");
+  }
+};

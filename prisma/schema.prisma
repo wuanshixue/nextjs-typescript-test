@@ -36,6 +36,9 @@ model User {
   blocks                 Block[]         @relation("BlocksSent")
   blockedBy              Block[]         @relation("BlocksReceived")
   stories                Story[]
+  conversationsAsParticipant1 Conversation[] @relation("ConversationsAsParticipant1")
+  conversationsAsParticipant2 Conversation[] @relation("ConversationsAsParticipant2")
+  sentMessages                Message[]
 }
 
 model Post {
@@ -110,5 +113,28 @@ model Story {
   expiresAt DateTime
   img       String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
+  userId    String
+}
+
+model Conversation {
+  id             Int       @id @default(autoincrement())
+  createdAt      DateTime  @default(now())
+  participant1Id String
+  participant2Id String
+  participant1   User      @relation("ConversationsAsParticipant1", fields: [participant1Id], references: [id], onDelete: Cascade)
+  participant2   User      @relation("ConversationsAsParticipant2", fields: [participant2Id], references: [id], onDelete: Cascade)
+  messages       Message[]
+
+  @@unique([participant1Id, participant2Id])
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  text           String
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  isRead         Boolean      @default(false)
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import Image from "next/image";
 import {ClerkLoaded, ClerkLoading, SignedIn, SignedOut, UserButton} from "@clerk/nextjs";
+import Notifications from "./Notifications";
 
 const Navbar=()=>{
   return (
@@ -23,9 +24,9 @@ const Navbar=()=>{
                         width={16}
                         height={16}
                         className="w-4 h-4" />
-                    <Link href="/">首页</Link>
+                    <span>首页</span>
                 </Link>
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/friends" className="flex items-center gap-2">
                     <Image
                         src="/friends.png"
                         alt="Friends"
@@ -33,15 +34,6 @@ const Navbar=()=>{
                         height={16}
                         className="w-4 h-4" />
                     <span>好友</span>
-                </Link>
-                <Link href="/" className="flex items-center gap-2">
-                    <Image
-                        src="/stories.png"
-                        alt="Stories"
-                        width={16}
-                        height={16}
-                        className="w-4 h-4" />
-                    <span>故事</span>
                 </Link>
                 <div className="hidden xl:flex p-2 bg-slate-100 items-center rounded-xl">
                     <input type="text" placeholder="search..." className="bg-transparent outline-none"/>
@@ -51,31 +43,28 @@ const Navbar=()=>{
         </div>
         {/*RIGHT*/}
         <div className="w-[30%] flex items-center gap-4 xl:gap-8 justify-end">
-            <ClerkLoading>
-                <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"/>
-            </ClerkLoading>
-            <ClerkLoaded>
-                <SignedIn>
-                    <div className="cursor-pointer">
-                        <Image src="/people.png" alt="" width={24} height={24}/>
-                    </div>
-                    <div className="cursor-pointer">
-                        <Image src="/messages.png" alt="" width={20} height={20}/>
-                    </div>
-                    <div className="cursor-pointer">
-                        <Image src="/notifications.png" alt="" width={20} height={20}/>
-                    </div>
-                    <UserButton/>
-                </SignedIn>
-                <SignedOut>
-                    <div className="flex items-center gap-2 text-sm">
-                        <Image src="/login.png" alt="" width={20} height={20}/>
-                        <Link href="/sign-in">登录/注册</Link>
-                    </div>
-                </SignedOut>
-            </ClerkLoaded>
-            <MobileMenu/>
-        </div>
+      <ClerkLoading>
+        <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white" />
+      </ClerkLoading>
+      <ClerkLoaded>
+        <SignedIn>
+          <div className="cursor-pointer">
+            <Link href="/friends">
+              <Image src="/people.png" alt="" width={24} height={24} />
+            </Link>
+          </div>
+          <Notifications />
+          <UserButton />
+        </SignedIn>
+        <SignedOut>
+          <div className="flex items-center gap-2 text-sm">
+            <Image src="/login.png" alt="" width={20} height={20} />
+            <Link href="/sign-in">登录/注册</Link>
+          </div>
+        </SignedOut>
+      </ClerkLoaded>
+      <MobileMenu />
+    </div>
     </div>
   )
 }
