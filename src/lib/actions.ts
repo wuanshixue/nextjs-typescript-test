@@ -462,9 +462,7 @@ export const sendMessage = async (receiverId: string, text: string) => {
   }
 };
 
-export const getNotifications = async () => {
-  const { userId: currentUserId } = auth();
-
+export const getNotifications = async (currentUserId: string | null) => {
   if (!currentUserId) {
     return [];
   }

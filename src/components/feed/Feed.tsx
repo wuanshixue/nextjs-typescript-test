@@ -1,5 +1,14 @@
 import Post from "./Post";
 import prisma from "@/lib/client";
+import { Post as PostType, User } from "@prisma/client";
+
+type PostWithExtras = PostType & {
+  user: User;
+  likes: { userId: string }[];
+  _count: {
+    comments: number;
+  };
+};
 
 const Feed = async ({
   username,
@@ -8,7 +17,7 @@ const Feed = async ({
   username?: string;
   currentUserId: string | null;
 }) => {
-  let posts = [];
+  let posts: PostWithExtras[] = [];
 
   if (username) {
     posts = await prisma.post.findMany({

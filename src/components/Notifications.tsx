@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getNotifications, readConversation } from "@/lib/actions";
 import { User, Message, Conversation } from "@prisma/client";
+import { useAuth } from "@clerk/nextjs";
 
 type NotificationWithSender = Message & {
   sender: User;
@@ -13,23 +14,28 @@ type NotificationWithSender = Message & {
 
 const Notifications = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationWithSender[]>([]);
+  const [notifications, setNotifications] = useState<NotificationWithSender[]>(
+    []
+  );
+  const { userId } = useAuth();
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const notifs = await getNotifications();
-        setNotifications(notifs);
+          const notifs = await getNotifications(userId ?? null);
+          setNotifications(notifs);
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
       }
     };
 
-    fetchNotifications();
-    // Optional: Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    if (userId) {
+      fetchNotifications();
+      // Optional: Poll for new notifications every 30 seconds
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [userId]);
 
   const handleRead = async (notification: NotificationWithSender) => {
     try {
@@ -105,4 +111,3 @@ const Notifications = () => {
 };
 
 export default Notifications;
-
