@@ -1,13 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { Comment, User } from "@prisma/client";
+import { Comment, User, Like } from "@prisma/client";
 import { useUser } from "@clerk/nextjs";
 import { useOptimistic, useState } from "react";
 import { addComment } from "@/lib/actions";
 import CommentInfo from "@/components/feed/CommentInfo"; // ✅ 新增导入
 
-type CommentWithUser = Comment & { user: User };
+type CommentWithUser = Comment & {
+    user: User;
+    likes?: Like[];
+    _count?: { likes: number };
+};
 
 const CommentList = ({
                          comments,
@@ -43,6 +47,10 @@ const CommentList = ({
                 school: "",
                 website: "",
                 createdAt: new Date(),
+            },
+            likes: [],
+            _count: {
+                likes: 0,
             },
         });
 
@@ -129,7 +137,7 @@ const CommentList = ({
                                         className="cursor-pointer w-4 h-4"
                                     />
                                     <span className="text-gray-300">|</span>
-                                    <span className="text-gray-500"> Likes</span>
+                                    <span className="text-gray-500">{comment._count?.likes || 0} Likes</span>
                                 </div>
                                 <div className="flex items-center gap-4 mt-2">
                                     Reply
