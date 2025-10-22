@@ -9,7 +9,11 @@ const Comments = async ({postId}:{postId:number})=>{
         },
         include: {
             user: true,
+            likes: {
+                select: { userId: true },
+            },
         },
+        orderBy: { createdAt: "desc" },
     });
     return (
     <div className="">

@@ -231,6 +231,39 @@ export const switchLike = async (postId: number) => {
     }
 };
 
+export const switchCommentLike = async (commentId: number) => {
+    const { userId } = auth();
+
+    if (!userId) throw new Error("User is not authenticated!");
+
+    try {
+        const existingLike = await prisma.like.findFirst({
+            where: {
+                commentId,
+                userId,
+            },
+        });
+
+        if (existingLike) {
+            await prisma.like.delete({
+                where: {
+                    id: existingLike.id,
+                },
+            });
+        } else {
+            await prisma.like.create({
+                data: {
+                    commentId,
+                    userId,
+                },
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        throw new Error("Something went wrong");
+    }
+};
+
 export const addComment = async (postId: number, desc: string) => {
     const { userId } = auth();
 
@@ -261,15 +294,26 @@ export const deleteComment = async (commentId: number) => {
     if (!userId) throw new Error("User is not authenticated!");
 
     try {
-        // 只允许作者本人删除
-        await prisma.comment.deleteMany({
-            where: {
-                id: commentId,
-                userId,
-            },
+        await prisma.$transaction(async (tx) => {
+            // 只允许作者本人删除（先确认归属）
+            const target = await tx.comment.findUnique({
+                where: { id: commentId },
+                select: { userId: true },
+            });
+            if (!target || target.userId !== userId) {
+                throw new Error("Not allowed to delete this comment");
+            }
+
+            // 先删除该评论的点赞，避免外键约束错误
+            await tx.like.deleteMany({ where: { commentId } });
+
+            // 删除该评论
+            await tx.comment.delete({
+                where: { id: commentId },
+            });
         });
 
-        revalidatePath("/"); // 或者你也可以写 revalidatePath(`/post/${postId}`) 视项目情况
+        revalidatePath("/");
     } catch (err) {
         console.log("deleteComment error:", err);
         throw new Error("Failed to delete comment!");
