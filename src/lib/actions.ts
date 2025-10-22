@@ -245,6 +245,11 @@ export const addComment = async (postId: number, desc: string) => {
             },
             include: {
                 user: true,
+                _count: {
+                    select: {
+                        likes: true,
+                    },
+                },
             },
         });
 

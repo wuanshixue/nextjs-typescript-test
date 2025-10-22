@@ -9,6 +9,11 @@ const Comments = async ({postId}:{postId:number})=>{
         },
         include: {
             user: true,
+            _count: {
+                select: {
+                    likes: true,
+                },
+            },
         },
     });
     return (
