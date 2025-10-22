@@ -277,35 +277,51 @@ export const deleteComment = async (commentId: number) => {
 };
 
 
-export const addPost = async (formData: FormData, img: string) => {
-    const desc = formData.get("desc") as string;
+export const addPost = async (
+  formData: FormData,
+  media: { img: string; video: string }
+) => {
+  const desc = formData.get("desc") as string;
 
-    const Desc = z.string().min(1).max(255);
+  const Desc = z.string().min(1).max(255);
 
-    const validatedDesc = Desc.safeParse(desc);
+  const validatedDesc = Desc.safeParse(desc);
 
-    if (!validatedDesc.success) {
-        //TODO
-        console.log("description is not valid");
-        return;
+  if (!validatedDesc.success) {
+    //TODO
+    console.log("description is not valid");
+    return;
+  }
+  const { userId } = auth();
+
+  if (!userId) throw new Error("User is not authenticated!");
+
+  try {
+    const postData: {
+      desc: string;
+      userId: string;
+      img?: string;
+      video?: string;
+    } = {
+      desc: validatedDesc.data,
+      userId,
+    };
+
+    if (media.img) {
+      postData.img = media.img;
     }
-    const { userId } = auth();
-
-    if (!userId) throw new Error("User is not authenticated!");
-
-    try {
-        await prisma.post.create({
-            data: {
-                desc: validatedDesc.data,
-                userId,
-                img,
-            },
-        });
-
-        revalidatePath("/");
-    } catch (err) {
-        console.log(err);
+    if (media.video) {
+      postData.video = media.video;
     }
+
+    await prisma.post.create({
+      data: postData,
+    });
+
+    revalidatePath("/");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const addStory = async (img: string) => {
