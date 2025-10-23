@@ -24,6 +24,31 @@ type SearchResponse = {
   posts: PostHit[];
 };
 
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+function Highlight({ text, query }: { text: string; query: string }) {
+  if (!query) return <>{text}</>;
+  try {
+    const regex = new RegExp(`(${escapeRegExp(query)})`, "ig");
+    const parts = text.split(regex);
+    return (
+      <>
+        {parts.map((part, i) =>
+          i % 2 === 1 ? (
+            <mark key={i} className="bg-yellow-200 px-0.5 rounded">
+              {part}
+            </mark>
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
+      </>
+    );
+  } catch {
+    return <>{text}</>;
+  }
+}
+
 const useDebouncedValue = (value: string, delay = 300) => {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -117,10 +142,17 @@ export default function Search() {
                             className="rounded-full"
                           />
                           <div className="flex flex-col leading-tight">
-                            <span className="text-sm font-medium">{u.username}</span>
+                            <span className="text-sm font-medium">
+                              <Highlight text={u.username} query={debounced} />
+                            </span>
                             {(u.name || u.surname) && (
                               <span className="text-xs text-gray-500">
-                                {[u.name, u.surname].filter(Boolean).join(" ")}
+                                <Highlight
+                                  text={[u.name, u.surname]
+                                    .filter(Boolean)
+                                    .join(" ")}
+                                  query={debounced}
+                                />
                               </span>
                             )}
                           </div>
@@ -150,8 +182,12 @@ export default function Search() {
                             className="rounded-md object-cover w-12 h-9"
                           />
                           <div className="flex flex-col leading-tight max-w-[20rem]">
-                            <span className="text-sm font-medium truncate">{p.desc}</span>
-                            <span className="text-xs text-gray-500 truncate">by {p.user.username}</span>
+                            <span className="text-sm font-medium truncate">
+                              <Highlight text={p.desc} query={debounced} />
+                            </span>
+                            <span className="text-xs text-gray-500 truncate">
+                              by <Highlight text={p.user.username} query={debounced} />
+                            </span>
                           </div>
                         </Link>
                       </li>
