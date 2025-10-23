@@ -1,6 +1,5 @@
 "use client"
 
-import {User} from "@prisma/client";
 import { useState } from "react";
 import Image from "next/image";
 import {updateProfile} from "@/lib/actions";
@@ -8,10 +7,21 @@ import { CldUploadWidget } from "next-cloudinary";
 import {useRouter} from "next/navigation";
 import UpdateButton from "@/components/rightMenu/UpdateButton";
 
-const UpdateUser=({user}:{user?:User})=>{
+type UpdateUserShape = {
+    cover?: string | null;
+    name?: string | null;
+    surname?: string | null;
+    description?: string | null;
+    city?: string | null;
+    school?: string | null;
+    work?: string | null;
+    website?: string | null;
+};
+
+const UpdateUser=({user}:{user?:UpdateUserShape})=>{
 
     const [open, setOpen] = useState(false);
-    const [cover, setCover] = useState<any>(false);
+    const [cover, setCover] = useState<{ secure_url?: string } | null>(null);
 
     const router = useRouter()
 
@@ -43,6 +53,8 @@ const UpdateUser=({user}:{user?:User})=>{
                         {/* COVER PICTURE */}
                         <CldUploadWidget
                             uploadPreset="social"
+                            // Cloudinary types can vary; we only read info.secure_url
+                            // @ts-expect-error - runtime provides info
                             onSuccess={(result) => setCover(result.info)}
                         >
                             {({ open }) => {

@@ -32,7 +32,7 @@ const UserInfoCard = async ({user}:{user?:User})=>{
             }
         })
 
-        blockRes ? (isUserBlocked = true) : (isUserBlocked = false)
+    isUserBlocked = !!blockRes;
         const followRes = await prisma.follower.findFirst({
             where:{
                 followerId:currentUserId,
@@ -40,14 +40,14 @@ const UserInfoCard = async ({user}:{user?:User})=>{
             }
         })
 
-        followRes ? (isFollowing = true) : (isFollowing = false)
+    isFollowing = !!followRes;
         const followReqRes = await prisma.followRequest.findFirst({
             where:{
                 senderId:currentUserId,
                 receiverId:user.id,
             }
         })
-        followReqRes ? (isFollowingSent = true) : (isFollowingSent = false)
+    isFollowingSent = !!followReqRes;
     }
 
     return(
@@ -56,7 +56,16 @@ const UserInfoCard = async ({user}:{user?:User})=>{
             <div className="flex items-center justify-between font-medium">
                 <span className="text-gray-500">User Info</span>
                 {currentUserId === user.id ? (
-                    <UpdateUser user={user}/>
+                    <UpdateUser user={{
+                        cover: user.cover ?? null,
+                        name: user.name ?? null,
+                        surname: user.surname ?? null,
+                        description: user.description ?? null,
+                        city: user.city ?? null,
+                        school: user.school ?? null,
+                        work: user.work ?? null,
+                        website: user.website ?? null,
+                    }}/>
                 ) :(
                     <Link href="/public" className="text-blue-500 text-sm">
                     See all

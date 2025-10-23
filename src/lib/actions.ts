@@ -2,6 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import prisma from "./client";
+import { serializeForClient } from "./serializeForClient";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -542,7 +543,7 @@ export const getNotifications = async (currentUserId: string | null) => {
   }
 
   try {
-    const notifications = await prisma.message.findMany({
+        const notifications = await prisma.message.findMany({
       where: {
         isRead: false,
         conversation: {
@@ -563,7 +564,7 @@ export const getNotifications = async (currentUserId: string | null) => {
         createdAt: "desc",
       },
     });
-    return notifications;
+        return serializeForClient(notifications);
   } catch (err) {
     console.error(err);
     return [];

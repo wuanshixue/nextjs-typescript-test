@@ -25,6 +25,7 @@ const Post=( { post }:{ post : FeedPostType } )=>{
                         width={40}
                         height={40}
                         className="w-10 h-10 rounded-full"
+                        unoptimized
                     />
                     <span className="font-medium">
                         {post.user.name && post.user.surname
@@ -42,6 +43,7 @@ const Post=( { post }:{ post : FeedPostType } )=>{
                         alt=""
                         fill
                         className="object-cover rounded-md"
+                        unoptimized
                     />
                 </div>}
                 <p>

@@ -13,9 +13,11 @@ type PostWithExtras = PostType & {
 const Feed = async ({
   username,
   currentUserId,
+  mode = "feed",
 }: {
   username?: string;
   currentUserId: string | null;
+  mode?: "feed" | "recommend";
 }) => {
   let posts: PostWithExtras[] = [];
 
@@ -45,7 +47,7 @@ const Feed = async ({
     });
   }
 
-  if (!username && currentUserId) {
+  if (!username && mode === "feed" && currentUserId) {
     const following = await prisma.follower.findMany({
       where: {
         followerId: currentUserId,
@@ -80,6 +82,37 @@ const Feed = async ({
         createdAt: "desc",
       },
     });
+  }
+
+  // 推荐：取每个用户点赞量最高的那篇 post
+  if (!username && mode === "recommend") {
+    // 取有发过帖的部分用户，限制数量避免一次性查太多
+    const usersWithPosts = await prisma.user.findMany({
+      where: { posts: { some: {} } },
+      select: { id: true },
+      take: 60,
+      orderBy: { createdAt: "desc" },
+    });
+    const topPosts = await Promise.all(
+      usersWithPosts.map(async (u) => {
+        const p = await prisma.post.findFirst({
+          where: { userId: u.id },
+          include: {
+            user: true,
+            likes: { select: { userId: true } },
+            _count: { select: { comments: true } },
+          },
+          orderBy: [
+            { likes: { _count: "desc" } },
+            { createdAt: "desc" },
+          ],
+        });
+        return p as PostWithExtras | null;
+      })
+    );
+    posts = topPosts.filter(Boolean) as PostWithExtras[];
+    // 按点赞数降序排序
+    posts.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
   }
 
   return (
