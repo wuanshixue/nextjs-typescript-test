@@ -1,4 +1,3 @@
-import Image from "next/image";
 import prisma from "@/lib/client";
 import {auth} from "@clerk/nextjs/server";
 import StoryList from "@/components/StoryList";

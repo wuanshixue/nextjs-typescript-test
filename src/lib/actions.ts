@@ -6,7 +6,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 export const switchFollow = async (userId: string) => {
-    const { userId: currentUserId } = auth();
+    const authData = await auth();
+    const currentUserId = authData.userId;
 
     if (!currentUserId) {
         throw new Error("User is not authenticated!");
@@ -56,7 +57,8 @@ export const switchFollow = async (userId: string) => {
 };
 
 export const switchBlock = async (userId: string) => {
-    const { userId: currentUserId } = auth();
+    const authData = await auth();
+    const currentUserId = authData.userId;
 
     if (!currentUserId) {
         throw new Error("User is not Authenticated!!");
@@ -91,7 +93,8 @@ export const switchBlock = async (userId: string) => {
 };
 
 export const acceptFollowRequest = async (userId: string) => {
-    const { userId: currentUserId } = auth();
+    const authData = await auth();
+    const currentUserId = authData.userId;
 
     if (!currentUserId) {
         throw new Error("User is not Authenticated!!");
@@ -126,7 +129,8 @@ export const acceptFollowRequest = async (userId: string) => {
 };
 
 export const declineFollowRequest = async (userId: string) => {
-    const { userId: currentUserId } = auth();
+    const authData = await auth();
+    const currentUserId = authData.userId;
 
     if (!currentUserId) {
         throw new Error("User is not Authenticated!!");
@@ -157,7 +161,7 @@ export const updateProfile = async (formData:FormData,cover:string)=>{
     const fields = Object.fromEntries(formData);
 
     const filteredFields = Object.fromEntries(
-        Object.entries(fields).filter(([_, value]) => value !== "")
+        Object.entries(fields).filter(([, value]) => value !== "")
     )
 
     const Profile = z.object({
@@ -178,7 +182,8 @@ export const updateProfile = async (formData:FormData,cover:string)=>{
         return ;
     }
 
-    const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
     if (!userId) {
         return ;
@@ -199,7 +204,8 @@ export const updateProfile = async (formData:FormData,cover:string)=>{
 };
 
 export const switchLike = async (postId: number) => {
-    const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
     if (!userId) throw new Error("User is not authenticated!");
 
@@ -232,7 +238,8 @@ export const switchLike = async (postId: number) => {
 };
 
 export const switchCommentLike = async (commentId: number) => {
-    const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
     if (!userId) throw new Error("User is not authenticated!");
 
@@ -265,7 +272,8 @@ export const switchCommentLike = async (commentId: number) => {
 };
 
 export const addComment = async (postId: number, desc: string) => {
-    const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
     if (!userId) throw new Error("User is not authenticated!");
 
@@ -289,7 +297,8 @@ export const addComment = async (postId: number, desc: string) => {
 };
 
 export const deleteComment = async (commentId: number) => {
-    const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
     if (!userId) throw new Error("User is not authenticated!");
 
@@ -336,7 +345,8 @@ export const addPost = async (
     console.log("description is not valid");
     return;
   }
-  const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
   if (!userId) throw new Error("User is not authenticated!");
 
@@ -369,7 +379,8 @@ export const addPost = async (
 };
 
 export const addStory = async (img: string) => {
-    const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
     if (!userId) throw new Error("User is not authenticated!");
 
@@ -405,7 +416,8 @@ export const addStory = async (img: string) => {
 };
 
 export const deletePost = async (postId: number) => {
-    const { userId } = auth();
+    const authData = await auth();
+    const userId = authData.userId;
 
     if (!userId) throw new Error("User is not authenticated!");
 
@@ -437,7 +449,8 @@ export const getUser = async (userId: string) => {
 }
 
 export const getConversation = async (receiverId: string) => {
-  const { userId: currentUserId } = auth();
+    const authData = await auth();
+    const currentUserId = authData.userId;
 
   if (!currentUserId) {
     throw new Error("User is not authenticated!");
@@ -480,7 +493,8 @@ export const getConversation = async (receiverId: string) => {
 };
 
 export const sendMessage = async (receiverId: string, text: string) => {
-  const { userId: currentUserId } = auth();
+    const authData = await auth();
+    const currentUserId = authData.userId;
 
   if (!currentUserId) {
     throw new Error("User is not authenticated!");
@@ -557,7 +571,8 @@ export const getNotifications = async (currentUserId: string | null) => {
 };
 
 export const readConversation = async (conversationId: number) => {
-  const { userId: currentUserId } = auth();
+    const authData = await auth();
+    const currentUserId = authData.userId;
 
   if (!currentUserId) {
     throw new Error("User is not authenticated!");
