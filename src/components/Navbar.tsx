@@ -3,6 +3,7 @@ import MobileMenu from "./MobileMenu";
 import Image from "next/image";
 import {ClerkLoaded, ClerkLoading, SignedIn, SignedOut, UserButton} from "@clerk/nextjs";
 import Notifications from "./Notifications";
+import Search from "./Search";
 
 const Navbar=()=>{
   return (
@@ -35,10 +36,7 @@ const Navbar=()=>{
                         className="w-4 h-4" />
                     <span>好友</span>
                 </Link>
-                <div className="hidden xl:flex p-2 bg-slate-100 items-center rounded-xl">
-                    <input type="text" placeholder="search..." className="bg-transparent outline-none"/>
-                    <Image src="/search.png" alt="" width={14} height={14}/>
-                </div>
+        <Search />
             </div>
         </div>
         {/*RIGHT*/}
