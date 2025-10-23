@@ -11,14 +11,11 @@ const personal: MenuItem[] = [
 ];
 
 const explore: MenuItem[] = [
-    { href: "/public", label: "Marketplace", icon: "/market.png" },
-    { href: "/public", label: "Events", icon: "/events.png" },
-    { href: "/public", label: "Albums", icon: "/albums.png" },
-    { href: "/public", label: "Videos", icon: "/videos.png" },
-    { href: "/public", label: "News", icon: "/news.png" },
-    { href: "/public", label: "Courses", icon: "/courses.png" },
-    { href: "/public", label: "Lists", icon: "/lists.png" },
-];
+    { href: "https://www.bilibili.com/", label: "Videos", icon: "/videos.png" },
+    { href: "https://y.music.163.com/m/user?id=539575920", label: "Music", icon: "/lists.png" },
+    { href: "https://www.msn.cn/zh-cn/channel/topic", label: "News", icon: "/news.png" },
+    { href: "https://www.msn.cn/zh-cn/weather/forecast", label: "Weather", icon: "/courses.png" },
+    ];
 
 const Section = ({ title, items }: { title: string; items: MenuItem[] }) => (
     <div className="flex flex-col gap-1">
@@ -26,16 +23,32 @@ const Section = ({ title, items }: { title: string; items: MenuItem[] }) => (
             {title}
         </div>
         <nav aria-label={title} className="flex flex-col">
-            {items.map((it) => (
-                <Link
-                    key={it.label}
-                    href={it.href}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
-                >
-                    <Image src={it.icon} alt="" width={18} height={18} className="opacity-80" />
-                    <span className="text-sm">{it.label}</span>
-                </Link>
-            ))}
+            {items.map((it) => {
+                const isExternal = /^https?:\/\//i.test(it.href);
+                const commonClass =
+                    "flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors";
+                const content = (
+                    <>
+                        <Image src={it.icon} alt="" width={18} height={18} className="opacity-80" />
+                        <span className="text-sm">{it.label}</span>
+                    </>
+                );
+                return isExternal ? (
+                    <a
+                        key={it.label}
+                        href={it.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={commonClass}
+                    >
+                        {content}
+                    </a>
+                ) : (
+                    <Link key={it.label} href={it.href} className={commonClass}>
+                        {content}
+                    </Link>
+                );
+            })}
         </nav>
     </div>
 );
