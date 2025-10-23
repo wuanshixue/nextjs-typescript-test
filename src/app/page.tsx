@@ -23,25 +23,31 @@ const HomePage = async ({
         <div className="flex flex-col gap-6">
           <AddPost />
           {/* Tabs */}
-          <div className="sticky top-0 z-10 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/30 rounded-lg border p-1 flex w-fit gap-1">
-            <Link
-              href="/?tab=feed"
-              className={`px-3 py-1.5 rounded-md text-sm ${
-                tab === "feed" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-slate-100"
-              }`}
-              prefetch={false}
-            >
-              动态
-            </Link>
-            <Link
-              href="/?tab=recommend"
-              className={`px-3 py-1.5 rounded-md text-sm ${
-                tab === "recommend" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-slate-100"
-              }`}
-              prefetch={false}
-            >
-              推荐
-            </Link>
+          <div className="sticky top-0 z-10">
+            <div className="inline-flex items-center gap-1 rounded-2xl border border-slate-200 bg-white/60 backdrop-blur supports-[backdrop-filter]:bg-white/50 p-1 shadow-sm">
+              <Link
+                href="/?tab=feed"
+                prefetch={false}
+                className={`px-4 py-2 rounded-xl text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                  tab === "feed"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:bg-white/70"
+                }`}
+              >
+                动态
+              </Link>
+              <Link
+                href="/?tab=recommend"
+                prefetch={false}
+                className={`px-4 py-2 rounded-xl text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                  tab === "recommend"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:bg-white/70"
+                }`}
+              >
+                推荐
+              </Link>
+            </div>
           </div>
           <Feed currentUserId={userId} mode={tab} />
         </div>
