@@ -2,13 +2,10 @@ import ProfileCard from "@/components/leftMenu/ProfileCard";
 import Link from "next/link";
 import Image from "next/image";
 import Ad from "@/components/Ad";
+import { auth } from "@clerk/nextjs/server";
+import prisma from "@/lib/client";
 
 type MenuItem = { href: string; label: string; icon: string };
-
-const personal: MenuItem[] = [
-    { href: "/public", label: "My Posts", icon: "/posts.png" },
-    { href: "/public", label: "Activity", icon: "/activity.png" },
-];
 
 const explore: MenuItem[] = [
     { href: "https://www.bilibili.com/", label: "Videos", icon: "/videos.png" },
@@ -53,14 +50,29 @@ const Section = ({ title, items }: { title: string; items: MenuItem[] }) => (
     </div>
 );
 
-const LeftMenu = ({ type }: { type: "home" | "profile" }) => {
+const LeftMenu = async ({ type }: { type: "home" | "profile" }) => {
+    // 动态生成“我的帖子”链接：已登录 -> /profile/[username]；未登录 -> /sign-in
+    const { userId } = await auth();
+    let myPostsHref = "/sign-in";
+    if (userId) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { username: true },
+        });
+        if (user?.username) myPostsHref = `/profile/${user.username}`;
+    }
+
+    const personalItems: MenuItem[] = [
+        { href: myPostsHref, label: "My Posts", icon: "/posts.png" },
+        { href: "/public", label: "Activity", icon: "/activity.png" },
+    ];
     return (
         <div className="flex flex-col gap-6">
             {type === "home" && <ProfileCard />}
 
             <aside className="rounded-xl border border-slate-200 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/50 p-3 shadow-sm">
                 <div className="flex flex-col gap-4">
-                    <Section title="个人" items={personal} />
+                    <Section title="个人" items={personalItems} />
                     <div className="h-px bg-slate-100 mx-2" />
                     <Section title="发现" items={explore} />
                 </div>

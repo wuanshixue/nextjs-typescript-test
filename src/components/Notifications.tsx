@@ -22,7 +22,7 @@ const Notifications = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-          const notifs = await getNotifications(userId ?? null);
+          const notifs = await getNotifications(userId ?? null) as NotificationWithSender[];
           setNotifications(notifs);
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
