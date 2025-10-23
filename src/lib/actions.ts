@@ -238,8 +238,12 @@ export const switchLike = async (postId: number) => {
 };
 
 export const switchCommentLike = async (commentId: number) => {
+<<<<<<< HEAD
     const authData = await auth();
     const userId = authData.userId;
+=======
+    const { userId } = auth();
+>>>>>>> fa6a2775d2eb1c07ce5dba5506c03bfda96c72c2
 
     if (!userId) throw new Error("User is not authenticated!");
 
