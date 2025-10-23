@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import { getConversation, sendMessage, readConversation } from "@/lib/actions";
-import { User } from "@prisma/client";
+import { Conversation, Message, User } from "@prisma/client";
 
-const formatTime = (dateString: string) => {
-  const date = new Date(dateString);
+const formatTime = (input: Date | string) => {
+  const date = typeof input === "string" ? new Date(input) : input;
   return date.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -17,7 +17,8 @@ const formatTime = (dateString: string) => {
 
 const Chat = ({ receiver }: { receiver: User }) => {
   const { userId: currentUserId } = useAuth();
-  const [conversation, setConversation] = useState<any>(null);
+  type ConvWithMessages = Conversation & { messages: Message[] };
+  const [conversation, setConversation] = useState<ConvWithMessages | null>(null);
   const [text, setText] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,7 +33,7 @@ const Chat = ({ receiver }: { receiver: User }) => {
       if (!currentUserId) return;
       try {
         const conv = await getConversation(receiver.id);
-        setConversation(conv);
+        setConversation(conv as ConvWithMessages);
         if (conv) {
           await readConversation(conv.id);
         }
@@ -51,10 +52,11 @@ const Chat = ({ receiver }: { receiver: User }) => {
 
     try {
       const newMessage = await sendMessage(receiver.id, text);
-      setConversation((prev: any) => ({
-        ...prev,
-        messages: [...prev.messages, newMessage],
-      }));
+      setConversation((prev) =>
+        prev
+          ? { ...prev, messages: [...prev.messages, newMessage as Message] }
+          : prev
+      );
       setText("");
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -94,7 +96,7 @@ const Chat = ({ receiver }: { receiver: User }) => {
         className="flex-1 p-4 md:p-6 overflow-y-auto"
         style={telegramBg}
       >
-        {conversation?.messages?.map((message: any) => (
+  {conversation?.messages?.map((message: Message) => (
           <div
             className={`flex items-end gap-2 my-2 ${
               message.senderId === currentUserId

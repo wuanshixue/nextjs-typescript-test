@@ -37,7 +37,6 @@ export async function POST(req: Request) {
         return new Response("Invalid signature", { status: 400 });
     }
 
-    const { id } = evt.data;
     const eventType = evt.type;
 
   /*console.log("🚀 Clerk webhook triggered");

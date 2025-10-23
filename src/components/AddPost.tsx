@@ -12,6 +12,9 @@ interface MediaInfo {
   resource_type: string;
 }
 
+type CloudinaryResult = { info?: unknown };
+type CloudinaryWidget = { close: () => void };
+
 const AddPost = () => {
   const { user, isLoaded } = useUser();
   const [desc, setDesc] = useState("");
@@ -24,12 +27,15 @@ const AddPost = () => {
     return "加载中...";
   }
 
-  const handleSuccess = (result: any, widget: any) => {
-    const info = result.info as MediaInfo;
-    if (info.resource_type === "video") {
-      setMedia((prev) => ({ ...prev, video: info.secure_url }));
-    } else {
-      setMedia((prev) => ({ ...prev, img: info.secure_url }));
+  const handleSuccess = (result: CloudinaryResult, widget: CloudinaryWidget) => {
+    const info = result && typeof result === "object" && "info" in result ? (result as { info?: unknown }).info : undefined;
+    const mediaInfo = (info && typeof info === "object" && info !== null ? info : null) as Partial<MediaInfo> | null;
+    if (mediaInfo?.secure_url) {
+      if (mediaInfo.resource_type === "video") {
+        setMedia((prev) => ({ ...prev, video: mediaInfo.secure_url! }));
+      } else {
+        setMedia((prev) => ({ ...prev, img: mediaInfo.secure_url! }));
+      }
     }
     widget.close();
   };
@@ -55,6 +61,7 @@ const AddPost = () => {
             placeholder="What's on your mind?"
             className="flex-1 bg-slate-100 rounded-lg p-2"
             name="desc"
+            value={desc}
             onChange={(e) => setDesc(e.target.value)}
           ></textarea>
           <div className="">

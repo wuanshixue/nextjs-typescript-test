@@ -30,7 +30,7 @@ const UserInfoCardInteraction = ({
                 followingRequestSent:
                     !prev.following && !prev.followingRequestSent ? true : false,
             }));
-        } catch (err) {}
+    } catch {}
     };
 
     const block = async () => {
@@ -41,7 +41,7 @@ const UserInfoCardInteraction = ({
                 ...prev,
                 blocked: !prev.blocked,
             }));
-        } catch (err) {}
+    } catch {}
     };
 
     const [optimisticState, switchOptimisticState] = useOptimistic(

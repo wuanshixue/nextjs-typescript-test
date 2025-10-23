@@ -15,6 +15,5 @@ bun dev
 ```
 
 https://dashboard.ngrok.com/get-started/setup/windows
-ngrok config add-authtoken ....
 ngrok http http://localhost:3000
 npx prisma studio
