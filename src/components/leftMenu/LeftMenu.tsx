@@ -1,7 +1,7 @@
 import ProfileCard from "@/components/leftMenu/ProfileCard";
 import Link from "next/link";
 import Image from "next/image";
-import Ad from "@/components/Ad";
+import Tools from "@/components/Tools";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
 
@@ -10,10 +10,10 @@ type MenuItem = { href: string; label: string; icon: string };
 // explore 可保持静态；personal 中的 “My Posts” 需要根据当前用户动态生成链接
 
 const explore: MenuItem[] = [
-    { href: "https://www.bilibili.com/", label: "Videos", icon: "/videos.png" },
-    { href: "https://y.music.163.com/m/user?id=539575920", label: "Music", icon: "/lists.png" },
-    { href: "https://www.msn.cn/zh-cn/channel/topic", label: "News", icon: "/news.png" },
-    { href: "https://www.msn.cn/zh-cn/weather/forecast", label: "Weather", icon: "/courses.png" },
+    { href: "http://www.babylead.com/", label: "中国育婴网", icon: "/videos.png" },
+    { href: "http://www.wadl.cn/", label: "孕妇网", icon: "/lists.png" },
+    { href: "http://www.mamacn.com/", label: "妈妈网", icon: "/news.png" },
+    { href: "http://www.ihuaiyun.com/", label: "中国孕婴网", icon: "/courses.png" },
     ];
 
 const Section = ({ title, items }: { title: string; items: MenuItem[] }) => (
@@ -81,7 +81,7 @@ const LeftMenu = async ({ type }: { type: "home" | "profile" }) => {
                 </div>
             </aside>
 
-            <Ad size="sm" />
+            <Tools size="sm" />
         </div>
     );
 };
