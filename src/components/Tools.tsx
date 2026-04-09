@@ -6,7 +6,7 @@ const tools = [
     { id: 2, name: "怀孕周历", icon: "/events.png", link: "http://www.mamacn.com/tools/zhunma/yunzao.html" },
     { id: 3, name: "孕期食谱", icon: "/albums.png", link: "http://www.mamacn.com/baobao/" },
     { id: 4, name: "胎教音乐", icon: "/lists.png", link: "https://music.163.com/#/playlist?id=10142264959" },
-    { id: 5, name: "生辰八字", icon: "/market.png", link: "http://www.wadl.cn/gongju/7453.html" },
+    { id: 5, name: "生辰八字测算", icon: "/map.png", link: "/tools/bazi" },
 ];
 
 const Tools = ({ size }: { size?: "sm" | "md" | "lg" }) => {
