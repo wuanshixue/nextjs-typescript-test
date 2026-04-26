@@ -6,6 +6,7 @@ import {updateProfile} from "@/lib/actions";
 import { CldUploadWidget } from "next-cloudinary";
 import {useRouter} from "next/navigation";
 import UpdateButton from "@/components/rightMenu/UpdateButton";
+import { USER_IDENTITY_LABELS, USER_IDENTITY_VALUES } from "@/lib/userIdentity";
 
 type UpdateUserShape = {
     cover?: string | null;
@@ -16,6 +17,7 @@ type UpdateUserShape = {
     school?: string | null;
     work?: string | null;
     website?: string | null;
+    identity?: string | null;
 };
 
 const UpdateUser=({user}:{user?:UpdateUserShape})=>{
@@ -79,6 +81,21 @@ const UpdateUser=({user}:{user?:UpdateUserShape})=>{
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* INPUT */}
                             <div className="flex flex-col gap-1">
+                                <label className="text-xs text-gray-500">身份标识</label>
+                                <select
+                                    className="ring-1 ring-gray-300 p-2 rounded-md text-sm bg-white"
+                                    name="identity"
+                                    defaultValue={user?.identity || "UNKNOWN"}
+                                >
+                                    {USER_IDENTITY_VALUES.map((identity) => (
+                                        <option key={identity} value={identity}>
+                                            {USER_IDENTITY_LABELS[identity]}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="flex flex-col gap-1">
                                 <label className="text-xs text-gray-500">First Name</label>
                                 <input
                                     type="text"
@@ -104,7 +121,7 @@ const UpdateUser=({user}:{user?:UpdateUserShape})=>{
                                     type="text"
                                     placeholder={user?.description || "Life is beautiful..."}
                                     className="ring-1 ring-gray-300 p-2 rounded-md text-sm"
-                                    name="desc"
+                                    name="description"
                                 />
                             </div>
 

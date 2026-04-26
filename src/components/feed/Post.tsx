@@ -6,6 +6,7 @@ import PostInteraction from "@/components/feed/PostInteraction";
 import {Suspense} from "react";
 import PostInfo from "@/components/feed/PostInfo";
 import {auth} from "@clerk/nextjs/server";
+import { getUserIdentityLabel, isExpectantMother } from "@/lib/userIdentity";
 
 type FeedPostType = PostType & { user: User } & {
     likes: { userId: string }[];
@@ -30,11 +31,22 @@ const Post=( { post }:{ post : FeedPostType } )=>{
                             unoptimized
                         />
                     </Link>
-                    <Link href={`/profile/${post.user.username}`} prefetch={false} className="font-medium hover:underline">
-                        {post.user.name && post.user.surname
-                            ? post.user.name + " " + post.user.surname
-                            : post.user.username}
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Link href={`/profile/${post.user.username}`} prefetch={false} className="font-medium hover:underline">
+                            {post.user.name && post.user.surname
+                                ? post.user.name + " " + post.user.surname
+                                : post.user.username}
+                        </Link>
+                        <span
+                            className={`rounded-md px-2 py-0.5 text-xs font-medium ${
+                                isExpectantMother(post.user.identity)
+                                    ? "bg-pink-50 text-pink-600"
+                                    : "bg-slate-100 text-slate-600"
+                            }`}
+                        >
+                            {getUserIdentityLabel(post.user.identity)}
+                        </span>
+                    </div>
                 </div>
                 {userId === post.user.id && <PostInfo postId={post.id}/>}
             </div>

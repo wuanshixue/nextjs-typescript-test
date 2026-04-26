@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Solar, Lunar } from "lunar-javascript";
+import { Solar } from "lunar-javascript";
 
 const BaziCalculator = () => {
     const [date, setDate] = useState("");
@@ -45,7 +45,7 @@ const BaziCalculator = () => {
                 nayin: `${bazi.getYearNaYin()} ${bazi.getMonthNaYin()} ${bazi.getDayNaYin()} ${bazi.getTimeNaYin()}`,
                 info: `农历: ${lunar.getYearInGanZhi()}年 ${lunar.getMonthInChinese()}月 ${lunar.getDayInChinese()} ${lunar.getTimeZhi()}时`,
             });
-        } catch (error) {
+        } catch {
             alert("计算失败，请检查输入格式");
         }
     };

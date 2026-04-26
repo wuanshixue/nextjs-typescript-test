@@ -23,7 +23,7 @@ const Notifications = () => {
     const fetchNotifications = async () => {
       try {
           const notifs = await getNotifications(userId ?? null);
-          setNotifications(notifs);
+          setNotifications(notifs as NotificationWithSender[]);
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
       }

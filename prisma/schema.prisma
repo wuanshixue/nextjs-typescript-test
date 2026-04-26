@@ -13,6 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserIdentity {
+  UNKNOWN
+  EXPECTANT_MOTHER
+  MOTHER
+  FAMILY
+  OTHER
+}
+
 model User {
   id                     String          @id
   username               String          @unique
@@ -25,6 +33,7 @@ model User {
   school                 String?
   work                   String?
   website                String?
+  identity               UserIdentity    @default(UNKNOWN)
   createdAt              DateTime        @default(now())
   posts                  Post[]
   comments               Comment[]

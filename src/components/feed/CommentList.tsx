@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Comment, User } from "@prisma/client";
+import { Comment, User, UserIdentity } from "@prisma/client";
 import { useUser } from "@clerk/nextjs";
 import { useRef, useState } from "react";
 import { addComment, switchCommentLike } from "@/lib/actions";
@@ -56,6 +56,7 @@ const CommentList = ({
         work: "",
         school: "",
         website: "",
+        identity: UserIdentity.UNKNOWN,
         createdAt: new Date(),
       },
       likes: [],

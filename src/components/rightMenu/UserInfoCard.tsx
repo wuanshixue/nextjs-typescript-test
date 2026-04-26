@@ -5,6 +5,7 @@ import {auth} from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
 import UserInfoCardInteraction from "@/components/rightMenu/UserInfoCardInteraction";
 import UpdateUser from "@/components/rightMenu/updateUser";
+import { getUserIdentityLabel, isExpectantMother } from "@/lib/userIdentity";
 
 
 const UserInfoCard = async ({user}:{user?:User})=>{
@@ -65,6 +66,7 @@ const UserInfoCard = async ({user}:{user?:User})=>{
                         school: user.school ?? null,
                         work: user.work ?? null,
                         website: user.website ?? null,
+                        identity: user.identity ?? null,
                     }}/>
                 ) :(
                     <Link href="/public" className="text-blue-500 text-sm">
@@ -81,6 +83,17 @@ const UserInfoCard = async ({user}:{user?:User})=>{
                     </span>
                     <span className="text-sm">@{user?.username ?? "unknown"}</span>
 
+                </div>
+                <div className="flex items-center gap-2">
+                    <span
+                        className={`rounded-md px-2 py-1 text-xs font-medium ${
+                            isExpectantMother(user.identity)
+                                ? "bg-pink-50 text-pink-600"
+                                : "bg-slate-100 text-slate-600"
+                        }`}
+                    >
+                        {getUserIdentityLabel(user.identity)}
+                    </span>
                 </div>
                 {user?.description && <p className="">
                     {user?.description}

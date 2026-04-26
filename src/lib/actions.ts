@@ -5,6 +5,7 @@ import prisma from "./client";
 import { serializeForClient } from "./serializeForClient";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { USER_IDENTITY_VALUES } from "./userIdentity";
 
 export const switchFollow = async (userId: string) => {
     const authData = await auth();
@@ -164,6 +165,7 @@ export const updateProfile = async (formData:FormData,cover:string)=>{
     const filteredFields = Object.fromEntries(
         Object.entries(fields).filter(([, value]) => value !== "")
     )
+    const profileInput = cover ? { cover, ...filteredFields } : filteredFields;
 
     const Profile = z.object({
         cover: z.string().optional(),
@@ -174,9 +176,10 @@ export const updateProfile = async (formData:FormData,cover:string)=>{
         school: z.string().max(60).optional(),
         work: z.string().max(60).optional(),
         website: z.string().max(60).optional(),
+        identity: z.enum(USER_IDENTITY_VALUES).optional(),
     });
 
-    const validatedFields = Profile.safeParse({ cover, ...filteredFields });
+    const validatedFields = Profile.safeParse(profileInput);
 
     if (!validatedFields.success) {
         console.log(validatedFields.error.flatten().fieldErrors);
